@@ -8,7 +8,7 @@ The code is divided into several Falaise modules (many of them written by other 
 
 ```bash
 source /sps/nemo/scratch/chauveau/software/falaise/develop/this_falaise.sh
-flreconstruct -p UDD_to_root_data.conf -i UDD.brio 
+flreconstruct -p UDD_to_root_data.conf -i /sps/nemo/snemo/snemo_data/reco_data/UDD/delta-tdc-10us-v3/snemo_run-XXXX_udd.brio
 ```
 
 This will produce a ROOT file called `extracted_data.root`, where a `TTree` will contain all the information you need.
@@ -25,11 +25,8 @@ The pipeline consists of 5 main modules:
 
 Let’s start with the first two: `udd2pcd` and `pcd2cd`.
 
-These modules were written by Manu and are used to convert from the UDD bank to the CD bank. Example files are located at:
+These modules were written by Manu and are used to convert from the UDD bank to the CD bank.
 
-```
-/sps/nemo/snemo/snemo_data/reco_data/UDD/delta-tdc-10us-v3/snemo_run-XXXX_udd.brio
-```
 
 ### `udd2pcd`
 
