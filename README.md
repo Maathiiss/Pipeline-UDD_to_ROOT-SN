@@ -1,7 +1,5 @@
 # Little help to reconstruct data
 
-**July 2025**
-
 This document describes how to use a really basic pipeline for SuperNEMO data reconstruction from UDD to PCD and Root.
 
 ---
