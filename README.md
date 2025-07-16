@@ -1,76 +1,70 @@
-# Little Help to Reconstruct Data
+# Little help to reconstruct data
 
-This document describes how to use a really basic pipeline for SuperNEMO data reconstruction, from UDD to PCD and ROOT.
+**July 2025**
 
-## Basic Use of the Code
+This document describes how to use a really basic pipeline for SuperNEMO data reconstruction from UDD to PCD and Root.
 
-The code is divided into several Falaise modules (many of them written by other members of the collaboration) and can be launched using the following commands:
+---
+
+## Basic use of the code
+
+The code is divided in several Falaise module (lots of them from other people in the collaboration) and can be launched using the following command (the git clone should only be done the first time): 
 
 ```bash
-source /sps/nemo/scratch/chauveau/software/falaise/develop/this_falaise.sh
-flreconstruct -p UDD_to_root_data.conf -i /sps/nemo/snemo/snemo_data/reco_data/UDD/delta-tdc-10us-v3/snemo_run-XXXX_udd.brio
+$> git clone https://github.com/Maathiiss/Pipeline-UDD_to_ROOT-SN
+$> source /sps/nemo/scratch/chauveau/software/falaise/develop/this_falaise.sh
+$> flreconstruct -p UDD_to_root_data.conf -i UDD.brio 
 ```
 
-This will produce a ROOT file called `extracted_data.root`, where a `TTree` will contain all the information you need.
+It will produce a Root file called `extracted_data.root` in which a TTree will contain all the information you want.
 
-## Understanding Each Module
+---
 
-The pipeline consists of 5 main modules:
+## Understand each module
+
+The pipeline is divided into 5 different modules:
 
 - `udd2pcd`
 - `pcd2cd`
-- `TKReconstruct`: converts CD to TTD bank
-- `ChargedParticleTracker`: converts TTD to PTD bank
-- `Module0`: converts PTD to ROOT
+- `TKReconstruct` → from CD to TTD bank
+- `ChargedParticleTracker` → from TTD to PTD bank
+- `Module0` → from PTD to root
 
-Let’s start with the first two: `udd2pcd` and `pcd2cd`.
+Let's start with the two modules `udd2pcd` and `pcd2cd`:
 
-These modules were written by Manu and are used to convert from the UDD bank to the CD bank.
-
+These two modules were written by Manu. This code is used to switch from the UDD bank to the CD bank (files are here: `/sps/nemo/snemo/snemo_data/reco_data/UDD/delta-tdc-10us-v3/snemo_run-XXXX_udd.brio`).
 
 ### `udd2pcd`
 
-Source code available [here](https://github.com/SuperNEMO-DBD/Falaise/blob/c0b9854a02b6703080c9680ad8822deded0b6045/source/falaise/snemo/processing/udd2pcd_module.cc#L35)
+Available [here](https://github.com/SuperNEMO-DBD/Falaise/blob/c0b9854a02b6703080c9680ad8822deded0b6045/source/falaise/snemo/processing/udd2pcd_module.cc#L35).  
+Pre-calibration, such as z calculation.
 
 ### `pcd2cd`
 
-This module uses two files:
+Uses 2 files for the calibrations:
 
-- **Time calibration file**: currently provided by Manu and stored in my space, but the path can be changed.
-- **Energy calibration file**: created by me, using only the "a" parameter from the calibration; also stored in my space.
+- Time calibration file → file produced by Manu for now, stored in my scratch directory. Easily replaceable.
+- Energy calibration file → file produced by me using only the "a" parameter in the calibration, stored in my scratch directory. Easily replaceable.
 
-Source code available [here](https://github.com/SuperNEMO-DBD/Falaise/blob/c0b9854a02b6703080c9680ad8822deded0b6045/source/falaise/snemo/processing/pcd2cd_module.cc)
-
----
+The code is available [here](https://github.com/SuperNEMO-DBD/Falaise/blob/c0b9854a02b6703080c9680ad8822deded0b6045/source/falaise/snemo/processing/pcd2cd_module.cc)
 
 ### `TKReconstruct`
 
-This module clusters and fits Geiger cell hits to reconstruct particle trajectories.
+Clustering of Geiger cells and trajectory reconstruction.  
+The code is available [here](https://github.com/TomasKrizak/CimrmanModule.git)
 
-- Source code: [CimrmanModule GitHub](https://github.com/TomasKrizak/CimrmanModule.git)
-- You can clone this repository and set your own path in `Falaise_TKReconstruct.directory`
-- Many parameters can be modified — to be explored.
-
----
+Change the `Falaise_TKReconstruct.directory` entry in your `UDD_to_root_data.conf` if you used your own version of Cimmerman.
 
 ### `ChargedParticleTracker`
 
-This module extrapolates particle trajectories to the foil and calorimeter to help identify particle types.
-
-- Source code: **[Link missing – to be added]**
-
----
+Particles trajectory extrapolation on the foil and calorimeter to identify particle's nature.
 
 ### `Module0`
 
-This module extracts data from PTD to a ROOT file, generating `extracted_data.root` in the current directory.
+Extracts PTD to root files. It will create an `extracted_data.root` root file in the current directory.
 
-- Simplified version available here: [Easy_ptd_to_root](https://github.com/Maathiiss/Easy_ptd_to_root.git)
-- Original version: [FalaiseSkeletonModules](https://github.com/emchauve/FalaiseSkeletonModules.git)
+A simpler version of this code is available [here](https://github.com/Maathiiss/Easy_ptd_to_root.git), but you can find the original one [here](https://github.com/emchauve/FalaiseSkeletonModules.git).
 
-You can modify this module to add more branches to the output `TTree`. Relevant resources:
+You can easily modify this one to get more branches in the tree, using the PTD extraction in this [directory](https://github.com/SuperNEMO-DBD/Falaise/tree/develop/source/falaise/snemo/datamodels) or some examples in the [flvisualize GitHub](https://github.com/emchauve/Falaise/blob/develop/programs/flvisualize/EventBrowser/browser_tracks.cc)
 
-- PTD extraction data structures: [Falaise Data Models](https://github.com/SuperNEMO-DBD/Falaise/tree/develop/source/falaise/snemo/datamodels)
-- Example visualization code: [flvisualize - Event Browser](https://github.com/emchauve/Falaise/blob/develop/programs/flvisualize/EventBrowser/browser_tracks.cc)
-
-Clone the repository and set your path in `FalaiseSkeletonModules.directory`.
+Change `FalaiseSkeletonModules.directory` in your `UDD_to_root_data.conf` if you use your own extraction file.
