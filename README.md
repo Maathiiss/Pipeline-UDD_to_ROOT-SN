@@ -1,6 +1,6 @@
 # Little help to reconstruct data
 
-This document describes how to use a really basic pipeline for SuperNEMO data reconstruction from UDD to PCD and Root.
+This document describes how to use a really basic pipeline for SuperNEMO data reconstruction from UDD to PTD and Root.
 
 ---
 
